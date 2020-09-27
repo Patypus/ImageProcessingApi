@@ -20,14 +20,14 @@ namespace Domain.Images.Interfaces
             _imageSource = imageSoruce.Value;
         }
 
-        public byte[] GetImage(string name, string resolution, string fileType, string watermark = "", string backgroundColour = "")
+        public byte[] GetImage(string name, ImageFormat format, string resolution = "", string watermark = "", string backgroundColour = "")
         {
-            using (var t = new Bitmap(Path.Combine(_imageSource.Path, $"{name}.png")))
+            using (var impage = new Bitmap(Path.Combine(_imageSource.Path, $"{name}.png")))
             {
-                using (var ms = new MemoryStream())
+                using (var stream = new MemoryStream())
                 {
-                    t.Save(ms, ImageFormat.Jpeg);
-                    return ms.ToArray();
+                    impage.Save(stream, format);
+                    return stream.ToArray();
                 }
             };
         }
