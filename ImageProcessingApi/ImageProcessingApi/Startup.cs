@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain.Images;
+using Domain.Images.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -33,6 +35,9 @@ namespace ImageProcessingApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Image Processing API", Version = "version 1" });
             });
+
+            DomainImagesSetup.ConfigureServices(services);
+            services.Configure<ImageSource>(Configuration.GetSection("ImageSource"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
