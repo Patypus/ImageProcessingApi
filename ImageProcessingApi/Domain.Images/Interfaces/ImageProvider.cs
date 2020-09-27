@@ -22,14 +22,44 @@ namespace Domain.Images.Interfaces
 
         public byte[] GetImage(string name, ImageFormat format, string resolution = "", string watermark = "", string backgroundColour = "")
         {
-            using (var impage = new Bitmap(Path.Combine(_imageSource.Path, $"{name}.png")))
+            using (var image = new Bitmap(Path.Combine(_imageSource.Path, $"{name}.png")))
             {
+
+                if (!string.IsNullOrEmpty(watermark))
+                {
+                    ApplyWaterMark(image, watermark);
+                }
+
                 using (var stream = new MemoryStream())
                 {
-                    impage.Save(stream, format);
+                    image.Save(stream, format);
                     return stream.ToArray();
                 }
             };
+        }
+
+        private void ApplyWaterMark(Image image, string watermark)
+        {
+            using (var graphics = Graphics.FromImage(image))
+            {
+                using (var font = new Font("consolas", 10))
+                {
+                    var stringSize = graphics.MeasureString(watermark, font);
+                    var watermarkLocation = CalculateWatermarkLocation(image.Height, image.Width, stringSize);
+                    
+                    graphics.DrawString(watermark, font, Brushes.LightGray, new Point(watermarkLocation.x, watermarkLocation.y));
+                }
+            }
+        }
+
+        private (int x, int y) CalculateWatermarkLocation(int imageHeight, int imageWidth, SizeF watermarkTextSize)
+        {
+            var halfImageHeight = imageHeight / 2;
+            var halfImageWidth = imageWidth / 2;
+            var watermarkX = halfImageWidth - (watermarkTextSize.Width / 2);
+            var watermarkY = halfImageHeight - (watermarkTextSize.Height / 2);
+
+            return (x: (int)Math.Max(0, watermarkX), y: (int)Math.Max(0, watermarkY));
         }
     }
 }
