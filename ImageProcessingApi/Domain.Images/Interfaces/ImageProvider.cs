@@ -24,17 +24,39 @@ namespace Domain.Images.Interfaces
         {
             using (var image = new Bitmap(Path.Combine(_imageSource.Path, $"{name}.png")))
             {
-
                 if (!string.IsNullOrEmpty(watermark))
                 {
                     ApplyWaterMark(image, watermark);
                 }
 
-                using (var stream = new MemoryStream())
+                //recolour
+                var colourMap = new ColorMap
                 {
-                    image.Save(stream, format);
-                    return stream.ToArray();
+                    OldColor = image.GetPixel(0, 0),
+                    NewColor = Color.Chartreuse
+                };
+                ColorMap[] remapTable = { colourMap };
+                var attributes = new ImageAttributes();
+                attributes.SetRemapTable(remapTable, ColorAdjustType.Bitmap);
+
+                var newBmp = new Bitmap(image.Width, image.Height);
+                using (var gfx = Graphics.FromImage(newBmp))
+                {
+                    var rectangle = new Rectangle(0, 0, image.Width, image.Height);
+                    gfx.DrawImage(image, rectangle, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, attributes);
+
+                    using (var stream = new MemoryStream())
+                    {
+                        newBmp.Save(stream, format);
+                        return stream.ToArray();
+                    }
                 }
+                
+                //using (var stream = new MemoryStream())
+                //{
+                //    image.Save(stream, format);
+                //    return stream.ToArray();
+                //}
             };
         }
 
