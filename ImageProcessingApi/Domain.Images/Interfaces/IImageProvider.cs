@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing.Imaging;
-using System.Text;
+﻿using System.Drawing.Imaging;
 
-namespace Domain.Images.Implementations
+namespace Domain.Images.Interfaces
 {
     public interface IImageProvider
     {

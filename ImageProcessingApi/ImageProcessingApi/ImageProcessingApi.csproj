@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Domain.Cache.Redis\Domain.Cache.Redis.csproj" />
     <ProjectReference Include="..\Domain.Images\Domain.Images.csproj" />
   </ItemGroup>
 

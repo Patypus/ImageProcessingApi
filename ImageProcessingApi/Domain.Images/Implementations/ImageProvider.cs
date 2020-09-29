@@ -1,5 +1,8 @@
-﻿using Domain.Images.Configuration;
+﻿using Domain.Cache.Abstractions.Dtos;
+using Domain.Cache.Abstractions.Proxy;
+using Domain.Images.Configuration;
 using Domain.Images.Implementations;
+using Domain.Images.Interfaces;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -9,18 +12,36 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace Domain.Images.Interfaces
+namespace Domain.Images.Implementations
 {
     public class ImageProvider : IImageProvider
     {
         private readonly ImageSource _imageSource;
+        private readonly ICacheService _cacheService;
 
-        public ImageProvider(IOptions<ImageSource> imageSoruce)
+        public ImageProvider(IOptions<ImageSource> imageSoruce, ICacheService cacheService)
         {
             _imageSource = imageSoruce.Value;
+            _cacheService = cacheService;
         }
 
         public byte[] GetImage(string name, ImageFormat format, string resolution = "", string watermark = "", string backgroundColour = "")
+        {
+            var cacheRequest = new ImageRequestDto
+            {
+                Name = name
+            };
+
+            var image = _cacheService.GetImageFromCache(cacheRequest);
+            if (image == null || image.Length == 0)
+            {
+                image = GetImageFromDisk(name, format, resolution, watermark, backgroundColour);
+                _cacheService.AddImageToCache(cacheRequest, image);
+            }
+            return image;
+        }
+
+        private byte[] GetImageFromDisk(string name, ImageFormat format, string resolution = "", string watermark = "", string backgroundColour = "")
         {
             using (var image = new Bitmap(Path.Combine(_imageSource.Path, $"{name}.png")))
             {
@@ -35,7 +56,12 @@ namespace Domain.Images.Interfaces
                     OldColor = image.GetPixel(0, 0),
                     NewColor = Color.Chartreuse
                 };
-                ColorMap[] remapTable = { colourMap };
+                var colourMap2 = new ColorMap
+                {
+                    OldColor = image.GetPixel(20, 20),
+                    NewColor = Color.Chartreuse
+                };
+                ColorMap[] remapTable = { colourMap, colourMap2 };
                 var attributes = new ImageAttributes();
                 attributes.SetRemapTable(remapTable, ColorAdjustType.Bitmap);
 
@@ -51,7 +77,7 @@ namespace Domain.Images.Interfaces
                         return stream.ToArray();
                     }
                 }
-                
+
                 //using (var stream = new MemoryStream())
                 //{
                 //    image.Save(stream, format);

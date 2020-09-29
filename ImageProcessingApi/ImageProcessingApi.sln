@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30517.126
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageProcessingApi", "ImageProcessingApi\ImageProcessingApi.csproj", "{F98E9B98-D40C-4EF2-B4BA-00CD0BB4872A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageProcessingApi", "ImageProcessingApi\ImageProcessingApi.csproj", "{F98E9B98-D40C-4EF2-B4BA-00CD0BB4872A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Images", "Domain.Images\Domain.Images.csproj", "{162CBFE6-4E64-4B95-9533-D91573D4A3C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.Images", "Domain.Images\Domain.Images.csproj", "{162CBFE6-4E64-4B95-9533-D91573D4A3C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Cache.Abstractions", "Domain.Cache.Abstractions\Domain.Cache.Abstractions.csproj", "{F1C5F720-1A6B-4002-9F48-C6A406FC5105}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Cache.Redis", "Domain.Cache.Redis\Domain.Cache.Redis.csproj", "{523584FD-E26D-43AE-A4BD-94D53926B3A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{162CBFE6-4E64-4B95-9533-D91573D4A3C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{162CBFE6-4E64-4B95-9533-D91573D4A3C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{162CBFE6-4E64-4B95-9533-D91573D4A3C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1C5F720-1A6B-4002-9F48-C6A406FC5105}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1C5F720-1A6B-4002-9F48-C6A406FC5105}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1C5F720-1A6B-4002-9F48-C6A406FC5105}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1C5F720-1A6B-4002-9F48-C6A406FC5105}.Release|Any CPU.Build.0 = Release|Any CPU
+		{523584FD-E26D-43AE-A4BD-94D53926B3A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{523584FD-E26D-43AE-A4BD-94D53926B3A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{523584FD-E26D-43AE-A4BD-94D53926B3A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{523584FD-E26D-43AE-A4BD-94D53926B3A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,7 +1,5 @@
-﻿using Domain.Images.Configuration;
-using Domain.Images.Implementations;
+﻿using Domain.Images.Implementations;
 using Domain.Images.Interfaces;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Domain.Images

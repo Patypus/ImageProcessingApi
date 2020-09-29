@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain.Cache.Redis;
+using Domain.Cache.Redis.Configuration;
 using Domain.Images;
 using Domain.Images.Configuration;
 using Microsoft.AspNetCore.Builder;
@@ -37,7 +39,9 @@ namespace ImageProcessingApi
             });
 
             DomainImagesSetup.ConfigureServices(services);
+            DomainCacheRedisSetup.ConfigureServices(services);
             services.Configure<ImageSource>(Configuration.GetSection("ImageSource"));
+            services.Configure<RedisConfiguration>(Configuration.GetSection("CacheConfiguration"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

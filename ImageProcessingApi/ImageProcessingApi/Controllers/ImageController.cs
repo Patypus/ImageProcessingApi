@@ -5,8 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Domain.Cache.Redis;
 using Domain.Images;
 using Domain.Images.Implementations;
+using Domain.Images.Interfaces;
 using ImageProcessingApi.Configuration;
 using Microsoft.AspNetCore.Mvc;
 
