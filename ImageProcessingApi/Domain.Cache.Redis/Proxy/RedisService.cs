@@ -30,7 +30,7 @@ namespace Domain.Cache.Redis.Proxy
         {
             if (_configuration.CacheEnabled)
             {
-                var server = _connection.GetServer();
+                var server = _connection.GetServer(_configuration.HostName);
                 server.FlushDatabase();
             }
         }

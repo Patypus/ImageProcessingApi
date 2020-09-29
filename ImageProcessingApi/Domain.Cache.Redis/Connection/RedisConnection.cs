@@ -43,9 +43,9 @@ namespace Domain.Cache.Redis.Connection
             return _connection.GetDatabase();
         }
 
-        public IServer GetServer()
+        public IServer GetServer(string serverName)
         {
-            return _connection.GetServer(_configuration.HostName);
+            return _connection.GetServer(serverName);
         }
     }
 }
