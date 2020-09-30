@@ -22,10 +22,6 @@ namespace Domain.Cache.Redis.Connection
             {
                 _connection = ConnectionMultiplexer.Connect($"{_configuration.HostName}:{_configuration.PortNumber}");
             }
-            else
-            {
-                throw new ArgumentException("Cache has been requested when it is configured as disabled.");
-            }
         }
 
         public static RedisConnection GetConnection(RedisConfiguration configuration)
