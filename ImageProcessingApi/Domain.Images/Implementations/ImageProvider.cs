@@ -1,6 +1,7 @@
 ﻿using Domain.Cache.Abstractions.Dtos;
 using Domain.Cache.Abstractions.Proxy;
 using Domain.Images.Configuration;
+using Domain.Images.Filestystem;
 using Domain.Images.Implementations;
 using Domain.Images.Interfaces;
 using Microsoft.Extensions.Options;
@@ -18,11 +19,13 @@ namespace Domain.Images.Implementations
     {
         private readonly ImageSource _imageSource;
         private readonly ICacheService _cacheService;
+        private readonly IFileService _fileService;
 
-        public ImageProvider(IOptions<ImageSource> imageSoruce, ICacheService cacheService)
+        public ImageProvider(IOptions<ImageSource> imageSoruce, ICacheService cacheService, IFileService fileService)
         {
             _imageSource = imageSoruce.Value;
             _cacheService = cacheService;
+            _fileService = fileService;
         }
 
         public byte[] GetImage(string name, ImageFormat format, string resolution = "", string watermark = "", string backgroundColour = "")
@@ -43,8 +46,9 @@ namespace Domain.Images.Implementations
 
         private byte[] GetImageFromDisk(string name, ImageFormat format, string resolution = "", string watermark = "", string backgroundColour = "")
         {
-            using (var image = new Bitmap(Path.Combine(_imageSource.Path, $"{name}.png")))
-            {
+            var image = _fileService.LoadImage(_imageSource.Path, name);
+            //using (var image = new Bitmap(Path.Combine(_imageSource.Path, $"{name}.png")))
+            //{
                 if (!string.IsNullOrEmpty(watermark))
                 {
                     ApplyWaterMark(image, watermark);
@@ -83,7 +87,7 @@ namespace Domain.Images.Implementations
                 //    image.Save(stream, format);
                 //    return stream.ToArray();
                 //}
-            };
+            //};
         }
 
         private void ApplyWaterMark(Image image, string watermark)

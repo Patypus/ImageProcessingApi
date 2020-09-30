@@ -1,4 +1,5 @@
-﻿using Domain.Images.Implementations;
+﻿using Domain.Images.Filestystem;
+using Domain.Images.Implementations;
 using Domain.Images.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,6 +10,7 @@ namespace Domain.Images
         public static void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<IImageProvider, ImageProvider>();
+            services.AddSingleton<IFileService, FileService>();
         }
     }
 }
