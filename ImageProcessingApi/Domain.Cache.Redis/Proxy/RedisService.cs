@@ -17,7 +17,7 @@ namespace Domain.Cache.Redis.Proxy
             _connection = RedisConnection.GetConnection(_configuration);
         }
 
-        public void AddImageToCache(ImageRequestDto requestKey, byte[] imageData)
+        public void AddImageToCache(CacheRequestDto requestKey, byte[] imageData)
         {
             if (_configuration.CacheEnabled)
             {
@@ -35,7 +35,7 @@ namespace Domain.Cache.Redis.Proxy
             }
         }
 
-        public byte[] GetImageFromCache(ImageRequestDto requestDto)
+        public byte[] GetImageFromCache(CacheRequestDto requestDto)
         {
             if (!_configuration.CacheEnabled)
             {

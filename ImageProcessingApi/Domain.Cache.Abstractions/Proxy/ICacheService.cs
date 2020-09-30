@@ -4,10 +4,10 @@ namespace Domain.Cache.Abstractions.Proxy
 {
     public interface ICacheService
     {
-        void AddImageToCache(ImageRequestDto requestKey, byte[] imageData);
+        void AddImageToCache(CacheRequestDto requestKey, byte[] imageData);
 
         void ClearCache();
 
-        byte[] GetImageFromCache(ImageRequestDto requestDto);
+        byte[] GetImageFromCache(CacheRequestDto requestDto);
     }
 }

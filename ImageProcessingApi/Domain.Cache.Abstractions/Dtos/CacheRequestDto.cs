@@ -1,6 +1,6 @@
 ﻿namespace Domain.Cache.Abstractions.Dtos
 {
-    public class ImageRequestDto
+    public class CacheRequestDto
     {
         public string Name { get; set; }
         public string FileType { get; set; }
