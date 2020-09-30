@@ -7,6 +7,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Domain.Cache.Redis;
 using Domain.Images;
+using Domain.Images.Dtos;
 using Domain.Images.Implementations;
 using Domain.Images.Interfaces;
 using ImageProcessingApi.Configuration;
@@ -26,13 +27,23 @@ namespace ImageProcessingApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Image(string name, string fileType, string resolution, string watermark = "", string backgroundColour = "")
+        public IActionResult Image(string name, string fileType, float? xResolution = null, float? yResolution = null, string watermark = "", string backgroundColour = "")
         {
             try
             {
                 var requestedFileType = ValidateFileType(fileType);
 
-                var image = _imageProvider.GetImage(name, requestedFileType.Format, resolution, watermark, backgroundColour);
+                var imageRequest = new ImageRequestDto
+                {
+                    Name = name,
+                    Format = requestedFileType.Format,
+                    ResolutionX = xResolution,
+                    ResolutionY = yResolution,
+                    Watermark = watermark,
+                    BackgroundColour = backgroundColour
+                };
+
+                var image = _imageProvider.GetImage(imageRequest);
                 return File(image, requestedFileType.ContentType);
             }
             catch(ArgumentException exception)
@@ -42,6 +53,10 @@ namespace ImageProcessingApi.Controllers
             catch (FileNotFoundException)
             {
                 return NotFound();
+            }
+            catch (Exception exception)
+            {
+                return Problem(exception.Message, statusCode: (int)HttpStatusCode.InternalServerError);
             }
         }
 

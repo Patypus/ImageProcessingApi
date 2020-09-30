@@ -1,9 +1,9 @@
-﻿using System.Drawing.Imaging;
+﻿using Domain.Images.Dtos;
 
 namespace Domain.Images.Interfaces
 {
     public interface IImageProvider
     {
-        byte[] GetImage(string name, ImageFormat format, string resolution = "", string watermark = "", string backgroundColour = "");
+        byte[] GetImage(ImageRequestDto request);
     }
 }
