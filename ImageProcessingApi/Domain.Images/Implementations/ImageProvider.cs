@@ -2,7 +2,6 @@
 using Domain.Cache.Abstractions.Proxy;
 using Domain.Images.Configuration;
 using Domain.Images.Dtos;
-using Domain.Images.Filestystem;
 using Domain.Images.Implementations;
 using Domain.Images.Interfaces;
 using Microsoft.Extensions.Options;
@@ -20,13 +19,11 @@ namespace Domain.Images.Implementations
     {
         private readonly ImageSource _imageSource;
         private readonly ICacheService _cacheService;
-        private readonly IFileService _fileService;
 
-        public ImageProvider(IOptions<ImageSource> imageSoruce, ICacheService cacheService, IFileService fileService)
+        public ImageProvider(IOptions<ImageSource> imageSoruce, ICacheService cacheService)
         {
             _imageSource = imageSoruce.Value;
             _cacheService = cacheService;
-            _fileService = fileService;
         }
 
         public byte[] GetImage(ImageRequestDto request)
@@ -47,50 +44,53 @@ namespace Domain.Images.Implementations
 
         private byte[] GetImageFromDisk(ImageRequestDto request)
         {
-            var image = _fileService.LoadImage(_imageSource.Path, request.Name);
-            
-            if (!string.IsNullOrEmpty(request.Watermark))
+            using (var fileStream = new FileStream(Path.Combine(_imageSource.Path, $"{request.Name}.png"), FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                ApplyWaterMark(image, request.Watermark);
-            }
+                var image = new Bitmap(fileStream);
 
-            if (request.ResolutionX.HasValue && request.ResolutionY.HasValue)
-            {
-                image.SetResolution(request.ResolutionX.Value, request.ResolutionY.Value);
-            }
+                if (!string.IsNullOrEmpty(request.Watermark))
+                {
+                    ApplyWaterMark(image, request.Watermark);
+                }
 
-            //recolour
-            //var colourMap = new ColorMap
-            //{
-            //    OldColor = image.GetPixel(0, 0),
-            //    NewColor = Color.Chartreuse
-            //};
-            //var colourMap2 = new ColorMap
-            //{
-            //    OldColor = image.GetPixel(20, 20),
-            //    NewColor = Color.Chartreuse
-            //};
-            //ColorMap[] remapTable = { colourMap, colourMap2 };
-            //var attributes = new ImageAttributes();
-            //attributes.SetRemapTable(remapTable, ColorAdjustType.Bitmap);
+                if (request.Resolution.HasValue)
+                {
+                    image.SetResolution(request.Resolution.Value, request.Resolution.Value);
+                }
 
-            //var newBmp = new Bitmap(image.Width, image.Height);
-            //using (var gfx = Graphics.FromImage(newBmp))
-            //{
-            //    var rectangle = new Rectangle(0, 0, image.Width, image.Height);
-            //    gfx.DrawImage(image, rectangle, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, attributes);
+                //recolour
+                //var colourMap = new ColorMap
+                //{
+                //    OldColor = image.GetPixel(0, 0),
+                //    NewColor = Color.Chartreuse
+                //};
+                //var colourMap2 = new ColorMap
+                //{
+                //    OldColor = image.GetPixel(20, 20),
+                //    NewColor = Color.Chartreuse
+                //};
+                //ColorMap[] remapTable = { colourMap, colourMap2 };
+                //var attributes = new ImageAttributes();
+                //attributes.SetRemapTable(remapTable, ColorAdjustType.Bitmap);
 
-            //    using (var stream = new MemoryStream())
-            //    {
-            //        newBmp.Save(stream, format);
-            //        return stream.ToArray();
-            //    }
-            //}
+                //var newBmp = new Bitmap(image.Width, image.Height);
+                //using (var gfx = Graphics.FromImage(newBmp))
+                //{
+                //    var rectangle = new Rectangle(0, 0, image.Width, image.Height);
+                //    gfx.DrawImage(image, rectangle, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, attributes);
 
-            using (var stream = new MemoryStream())
-            {
-                image.Save(stream, request.Format);
-                return stream.ToArray();
+                //    using (var stream = new MemoryStream())
+                //    {
+                //        newBmp.Save(stream, format);
+                //        return stream.ToArray();
+                //    }
+                //}
+
+                using (var stream = new MemoryStream())
+                {
+                    image.Save(stream, request.Format);
+                    return stream.ToArray();
+                }
             }
         }
 

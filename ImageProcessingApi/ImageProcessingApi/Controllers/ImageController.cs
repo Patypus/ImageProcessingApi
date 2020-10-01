@@ -27,7 +27,7 @@ namespace ImageProcessingApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Image(string name, string fileType, float? xResolution = null, float? yResolution = null, string watermark = "", string backgroundColour = "")
+        public IActionResult Image(string name, string fileType, float? resolution = null, string watermark = "", string backgroundColour = "")
         {
             try
             {
@@ -37,12 +37,15 @@ namespace ImageProcessingApi.Controllers
                 {
                     Name = name,
                     Format = requestedFileType.Format,
-                    ResolutionX = xResolution,
-                    ResolutionY = yResolution,
+                    Resolution = resolution,
                     Watermark = watermark,
                     BackgroundColour = backgroundColour
                 };
-
+                var tasks = new Task[50];
+                for (var i = 0; i < 50; i++)
+                {
+                    tasks[i] = Task.Run(() => _imageProvider.GetImage(imageRequest));
+                }
                 var image = _imageProvider.GetImage(imageRequest);
                 return File(image, requestedFileType.ContentType);
             }
