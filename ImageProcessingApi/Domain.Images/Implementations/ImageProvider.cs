@@ -12,6 +12,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Domain.Images.Implementations
 {
@@ -26,18 +27,22 @@ namespace Domain.Images.Implementations
             _cacheService = cacheService;
         }
 
-        public byte[] GetImage(ImageRequestDto request)
+        public async Task<byte[]> GetImageAsync(ImageRequestDto request)
         {
             var cacheRequest = new CacheRequestDto
             {
-                Name = request.Name
+                Name = request.Name,
+                FileType = request.Format.ToString(),
+                Resolution = request.Resolution.ToString(),
+                Watermark = request.Watermark,
+                 BackgroundColour = request.BackgroundColour
             };
 
-            var image = _cacheService.GetImageFromCache(cacheRequest);
+            var image = await _cacheService.GetImageFromCacheAsync(cacheRequest);
             if (image == null || image.Length == 0)
             {
                 image = GetImageFromDisk(request);
-                _cacheService.AddImageToCache(cacheRequest, image);
+                await _cacheService.AddImageToCacheAsync(cacheRequest, image);
             }
             return image;
         }

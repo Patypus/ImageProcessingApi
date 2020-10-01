@@ -27,7 +27,7 @@ namespace ImageProcessingApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Image(string name, string fileType, float? resolution = null, string watermark = "", string backgroundColour = "")
+        public async Task<IActionResult> Image(string name, string fileType, float? resolution = null, string watermark = "", string backgroundColour = "")
         {
             try
             {
@@ -41,12 +41,8 @@ namespace ImageProcessingApi.Controllers
                     Watermark = watermark,
                     BackgroundColour = backgroundColour
                 };
-                var tasks = new Task[50];
-                for (var i = 0; i < 50; i++)
-                {
-                    tasks[i] = Task.Run(() => _imageProvider.GetImage(imageRequest));
-                }
-                var image = _imageProvider.GetImage(imageRequest);
+                
+                var image = await _imageProvider.GetImageAsync(imageRequest);
                 return File(image, requestedFileType.ContentType);
             }
             catch(ArgumentException exception)

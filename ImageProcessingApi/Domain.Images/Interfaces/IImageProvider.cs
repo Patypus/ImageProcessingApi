@@ -1,9 +1,10 @@
 ﻿using Domain.Images.Dtos;
+using System.Threading.Tasks;
 
 namespace Domain.Images.Interfaces
 {
     public interface IImageProvider
     {
-        byte[] GetImage(ImageRequestDto request);
+        Task<byte[]> GetImageAsync(ImageRequestDto request);
     }
 }

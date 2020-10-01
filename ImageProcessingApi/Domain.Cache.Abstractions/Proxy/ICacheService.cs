@@ -1,13 +1,14 @@
 ﻿using Domain.Cache.Abstractions.Dtos;
+using System.Threading.Tasks;
 
 namespace Domain.Cache.Abstractions.Proxy
 {
     public interface ICacheService
     {
-        void AddImageToCache(CacheRequestDto requestKey, byte[] imageData);
+        Task AddImageToCacheAsync(CacheRequestDto requestKey, byte[] imageData);
 
-        void ClearCache();
+        Task ClearCacheAsync();
 
-        byte[] GetImageFromCache(CacheRequestDto requestDto);
+        Task<byte[]> GetImageFromCacheAsync(CacheRequestDto requestDto);
     }
 }

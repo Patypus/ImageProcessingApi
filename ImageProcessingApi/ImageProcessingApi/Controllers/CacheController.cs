@@ -1,8 +1,6 @@
 ﻿using Domain.Cache.Abstractions.Proxy;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -20,11 +18,11 @@ namespace ImageProcessingApi.Controllers
         }
 
         [HttpDelete]
-        public IActionResult ClearCache()
+        public async Task<IActionResult> ClearCacheAsync()
         {
             try
             {
-                _cacheService.ClearCache();
+                await _cacheService.ClearCacheAsync();
                 return Ok();
             }
             catch (Exception exception)
