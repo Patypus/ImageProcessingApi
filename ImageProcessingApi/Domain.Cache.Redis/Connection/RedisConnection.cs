@@ -3,6 +3,8 @@ using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -20,7 +22,9 @@ namespace Domain.Cache.Redis.Connection
 
             if (_configuration.CacheEnabled)
             {
-                _connection = ConnectionMultiplexer.Connect($"{_configuration.HostName}:{_configuration.PortNumber}");
+                var hosts = configuration.Endpoints.Select(endpoint => $"{endpoint.HostName}:{endpoint.PortNumber}");
+                var hostsString = String.Join(",", hosts);
+                _connection = ConnectionMultiplexer.Connect($"{hostsString},allowAdmin={_configuration.AllowAdmin}");
             }
         }
 
@@ -39,9 +43,14 @@ namespace Domain.Cache.Redis.Connection
             return _connection.GetDatabase();
         }
 
-        public IServer GetServer(string serverName)
+        public IServer GetServer(EndPoint endpoint)
         {
-            return _connection.GetServer(serverName);
+            return _connection.GetServer(endpoint);
+        }
+
+        public IEnumerable<EndPoint> GetEndPoints()
+        {
+            return _connection.GetEndPoints();
         }
     }
 }

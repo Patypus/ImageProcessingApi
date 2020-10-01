@@ -3,6 +3,8 @@ using Domain.Cache.Abstractions.Proxy;
 using Domain.Cache.Redis.Configuration;
 using Domain.Cache.Redis.Connection;
 using Microsoft.Extensions.Options;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,8 +36,15 @@ namespace Domain.Cache.Redis.Proxy
         {
             if (_configuration.CacheEnabled)
             {
-                var server = _connection.GetServer($"{_configuration.HostName}:{_configuration.PortNumber}");
-                await server.FlushDatabaseAsync();
+                var flushTasks = _connection.GetEndPoints()
+                    .Select(endpoint => Task.Run(() => 
+                    {
+                        var server = _connection.GetServer(endpoint);
+                        server.FlushDatabaseAsync();
+                    }))
+                    .ToList();
+
+                await Task.WhenAll(flushTasks);
             }
         }
 
