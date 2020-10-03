@@ -3,10 +3,7 @@ using Domain.Cache.Abstractions.Proxy;
 using Domain.Cache.Redis.Configuration;
 using Domain.Cache.Redis.Connection;
 using Microsoft.Extensions.Options;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net.Sockets;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Domain.Cache.Redis.Proxy

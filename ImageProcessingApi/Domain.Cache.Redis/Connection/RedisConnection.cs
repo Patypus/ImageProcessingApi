@@ -1,12 +1,9 @@
 ﻿using Domain.Cache.Redis.Configuration;
-using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace Domain.Cache.Redis.Connection
 {
