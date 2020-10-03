@@ -49,7 +49,7 @@ namespace Domain.Images.Implementations
 
         private byte[] GetImageFromDisk(ImageRequestDto request)
         {
-            using (var fileStream = new FileStream(Path.Combine(_imageSource.Path, $"{request.Name}.png"), FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (var fileStream = new FileStream(Path.Combine(_imageSource.Path, $"{request.Name}.{_imageSource.DefaultImageFileType}"), FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 var image = new Bitmap(fileStream);
 
