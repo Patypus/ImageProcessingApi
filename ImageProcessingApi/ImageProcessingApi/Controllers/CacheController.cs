@@ -17,6 +17,10 @@ namespace ImageProcessingApi.Controllers
             _cacheService = cacheService;
         }
 
+        /// <summary>
+        /// This endpoint will clear the contents of the cache
+        /// </summary>
+        /// <returns></returns>
         [HttpDelete]
         public async Task<IActionResult> ClearCacheAsync()
         {

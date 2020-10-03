@@ -26,6 +26,17 @@ namespace ImageProcessingApi.Controllers
             _imageProvider = imageProvider;
         }
 
+        /// <summary>
+        /// Returns the image as requested by the parameters. The name and fileType parameters are required. The name is the name of the image
+        /// file to return, less the file extension, and the fileType is the file type format to return the image in. All other parameters are 
+        /// optional and passing no value for them will retain the original state of the image.
+        /// </summary>
+        /// <param name="name">Name of the image to get (no file extension required)</param>
+        /// <param name="fileType">The file format to return the image in. Supported types: bmp, png, jpg, gif</param>
+        /// <param name="resolution"></param>
+        /// <param name="watermark">Watermark string to apply to the returned image</param>
+        /// <param name="backgroundColour"></param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> Image(string name, string fileType, float? resolution = null, string watermark = "", string backgroundColour = "")
         {
