@@ -33,7 +33,7 @@ namespace ImageProcessingApi.Controllers
         /// changed when this value is populated.</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> Image(string name, string fileType, float? resolution = null, string watermark = "", string backgroundColour = "")
+        public async Task<IActionResult> GetImage(string name, string fileType, float? resolution = null, string watermark = "", string backgroundColour = "")
         {
             try
             {
