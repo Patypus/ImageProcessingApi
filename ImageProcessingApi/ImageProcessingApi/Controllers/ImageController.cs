@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
@@ -41,14 +42,14 @@ namespace ImageProcessingApi.Controllers
             try
             {
                 var requestedFileType = ValidateFileType(fileType);
-
+                
                 var imageRequest = new ImageRequestDto
                 {
                     Name = name,
                     Format = requestedFileType.Format,
                     Resolution = resolution,
                     Watermark = watermark,
-                    BackgroundColour = backgroundColour
+                    BackgroundColour = ConvertColourString(backgroundColour)
                 };
                 
                 var image = await _imageProvider.GetImageAsync(imageRequest);
@@ -84,6 +85,13 @@ namespace ImageProcessingApi.Controllers
                 default:
                     throw new ArgumentException($"{requestedFileType} is not a supported image type. Supported types are: Bmp, Jpeg, Png, Gif");
             };
+        }
+
+        private Color? ConvertColourString(string colourString)
+        {
+            return !string.IsNullOrEmpty(colourString)
+                ? (Color?)ColorTranslator.FromHtml(colourString)
+                : null;
         }
     }
 }

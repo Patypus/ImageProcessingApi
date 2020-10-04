@@ -35,21 +35,21 @@ namespace Domain.Images.Implementations
                 FileType = request.Format.ToString(),
                 Resolution = request.Resolution.ToString(),
                 Watermark = request.Watermark,
-                 BackgroundColour = request.BackgroundColour
+                BackgroundColour = request.BackgroundColour.HasValue ? request.BackgroundColour.Value.ToString() : string.Empty
             };
 
             var image = await _cacheService.GetImageFromCacheAsync(cacheRequest);
             if (image == null || image.Length == 0)
             {
-                image = GetImageFromDisk(request);
+                image = GetFormattedImage(request);
                 await _cacheService.AddImageToCacheAsync(cacheRequest, image);
             }
             return image;
         }
 
-        private byte[] GetImageFromDisk(ImageRequestDto request)
+        private byte[] GetFormattedImage(ImageRequestDto request)
         {
-            using (var fileStream = new FileStream(Path.Combine(_imageSource.Path, $"{request.Name}.{_imageSource.DefaultImageFileType}"), FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (var fileStream = GetImageStream(Path.Combine(_imageSource.Path, $"{request.Name}.{_imageSource.DefaultImageFileType}")))
             {
                 var image = new Bitmap(fileStream);
 
@@ -58,45 +58,23 @@ namespace Domain.Images.Implementations
                     ApplyWaterMark(image, request.Watermark);
                 }
 
+                if (request.BackgroundColour.HasValue)
+                {
+                    image = ColourImageBackground(image, request.BackgroundColour.Value);
+                }
+
                 if (request.Resolution.HasValue)
                 {
                     image.SetResolution(request.Resolution.Value, request.Resolution.Value);
                 }
 
-                //recolour
-                //var colourMap = new ColorMap
-                //{
-                //    OldColor = image.GetPixel(0, 0),
-                //    NewColor = Color.Chartreuse
-                //};
-                //var colourMap2 = new ColorMap
-                //{
-                //    OldColor = image.GetPixel(20, 20),
-                //    NewColor = Color.Chartreuse
-                //};
-                //ColorMap[] remapTable = { colourMap, colourMap2 };
-                //var attributes = new ImageAttributes();
-                //attributes.SetRemapTable(remapTable, ColorAdjustType.Bitmap);
-
-                //var newBmp = new Bitmap(image.Width, image.Height);
-                //using (var gfx = Graphics.FromImage(newBmp))
-                //{
-                //    var rectangle = new Rectangle(0, 0, image.Width, image.Height);
-                //    gfx.DrawImage(image, rectangle, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, attributes);
-
-                //    using (var stream = new MemoryStream())
-                //    {
-                //        newBmp.Save(stream, format);
-                //        return stream.ToArray();
-                //    }
-                //}
-
-                using (var stream = new MemoryStream())
-                {
-                    image.Save(stream, request.Format);
-                    return stream.ToArray();
-                }
+                return GetImageBytes(image, request.Format);
             }
+        }
+
+        private FileStream GetImageStream(string imagePath)
+        {
+            return new FileStream(imagePath, FileMode.Open, FileAccess.Read, FileShare.Read);
         }
 
         private void ApplyWaterMark(Image image, string watermark)
@@ -121,6 +99,30 @@ namespace Domain.Images.Implementations
             var watermarkY = halfImageHeight - (watermarkTextSize.Height / 2);
 
             return (x: (int)Math.Max(0, watermarkX), y: (int)Math.Max(0, watermarkY));
+        }
+
+        private Bitmap ColourImageBackground(Image image, Color backgroundColour)
+        {
+            var attributes = new ImageAttributes();
+
+            var newBmp = new Bitmap(image.Width, image.Height);
+            using (var gfx = Graphics.FromImage(newBmp))
+            {
+                var rectangle = new Rectangle(0, 0, image.Width, image.Height);
+                gfx.FillRectangle(new SolidBrush(backgroundColour), rectangle);
+                gfx.DrawImage(image, rectangle, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, attributes);
+            }
+
+            return newBmp;
+        }
+
+        private byte[] GetImageBytes(Image image, ImageFormat format)
+        {
+            using (var stream = new MemoryStream())
+            {
+                image.Save(stream, format);
+                return stream.ToArray();
+            }
         }
     }
 }

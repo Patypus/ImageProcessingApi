@@ -1,4 +1,5 @@
-﻿using System.Drawing.Imaging;
+﻿using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace Domain.Images.Dtos
 {
@@ -8,6 +9,6 @@ namespace Domain.Images.Dtos
         public ImageFormat Format { get; set; }
         public float? Resolution { get; set; }
         public string Watermark { get; set; }
-        public string BackgroundColour {get;set;}
+        public Color? BackgroundColour {get;set;}
     }
 }
