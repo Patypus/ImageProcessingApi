@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.Cache.Abstractions",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.Cache.Redis", "Domain.Cache.Redis\Domain.Cache.Redis.csproj", "{523584FD-E26D-43AE-A4BD-94D53926B3A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageProcessingApi.Tests", "ImageProcessingApi.Tests\ImageProcessingApi.Tests.csproj", "{22A4EC60-C3F5-4EA0-99BD-AF656B34F1EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageProcessingApi.Tests", "ImageProcessingApi.Tests\ImageProcessingApi.Tests.csproj", "{22A4EC60-C3F5-4EA0-99BD-AF656B34F1EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Images.Tests", "Domain.Images.Tests\Domain.Images.Tests.csproj", "{0265BC5A-CC59-4704-89EA-ADC6D5EA6069}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{22A4EC60-C3F5-4EA0-99BD-AF656B34F1EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22A4EC60-C3F5-4EA0-99BD-AF656B34F1EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22A4EC60-C3F5-4EA0-99BD-AF656B34F1EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0265BC5A-CC59-4704-89EA-ADC6D5EA6069}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0265BC5A-CC59-4704-89EA-ADC6D5EA6069}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0265BC5A-CC59-4704-89EA-ADC6D5EA6069}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0265BC5A-CC59-4704-89EA-ADC6D5EA6069}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

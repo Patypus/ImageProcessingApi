@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Images.Interfaces
 {
-    public interface IImageProvider
+    public interface IImageService
     {
         /// <summary>
         /// Returns an image as a byte array that is formatted to the requirements of the <paramref name="request"/> parameter

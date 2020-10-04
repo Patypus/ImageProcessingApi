@@ -15,9 +15,9 @@ namespace ImageProcessingApi.Controllers
     [Route("[controller]")]
     public class ImageController : ControllerBase
     {
-        private readonly IImageProvider _imageProvider;
+        private readonly IImageService _imageProvider;
 
-        public ImageController(IImageProvider imageProvider)
+        public ImageController(IImageService imageProvider)
         {
             _imageProvider = imageProvider;
         }

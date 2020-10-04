@@ -1,53 +1,23 @@
-﻿using Domain.Cache.Abstractions.Dtos;
-using Domain.Cache.Abstractions.Proxy;
-using Domain.Images.Configuration;
+﻿using Domain.Images.Configuration;
 using Domain.Images.Dtos;
-using Domain.Images.Implementations;
-using Domain.Images.Interfaces;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Domain.Images.Implementations
+namespace Domain.Images.FileAccess
 {
     public class ImageProvider : IImageProvider
     {
         private readonly ImageSource _imageSource;
-        private readonly ICacheService _cacheService;
 
-        public ImageProvider(IOptions<ImageSource> imageSoruce, ICacheService cacheService)
+        public ImageProvider(IOptions<ImageSource> imageSource)
         {
-            _imageSource = imageSoruce.Value;
-            _cacheService = cacheService;
+            _imageSource = imageSource.Value;
         }
 
-        public async Task<byte[]> GetImageAsync(ImageRequestDto request)
-        {
-            var cacheRequest = new CacheRequestDto
-            {
-                Name = request.Name,
-                FileType = request.Format.ToString(),
-                Resolution = request.Resolution.ToString(),
-                Watermark = request.Watermark,
-                BackgroundColour = request.BackgroundColour.HasValue ? request.BackgroundColour.Value.ToString() : string.Empty
-            };
-
-            var image = await _cacheService.GetImageFromCacheAsync(cacheRequest);
-            if (image == null || image.Length == 0)
-            {
-                image = GetFormattedImage(request);
-                await _cacheService.AddImageToCacheAsync(cacheRequest, image);
-            }
-            return image;
-        }
-
-        private byte[] GetFormattedImage(ImageRequestDto request)
+        public byte[] GetFormattedImage(ImageRequestDto request)
         {
             using (var fileStream = GetImageStream(Path.Combine(_imageSource.Path, $"{request.Name}.{_imageSource.DefaultImageFileType}")))
             {
@@ -74,7 +44,7 @@ namespace Domain.Images.Implementations
 
         private FileStream GetImageStream(string imagePath)
         {
-            return new FileStream(imagePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            return new FileStream(imagePath, FileMode.Open, System.IO.FileAccess.Read, FileShare.Read);
         }
 
         private void ApplyWaterMark(Image image, string watermark)
@@ -85,7 +55,7 @@ namespace Domain.Images.Implementations
                 {
                     var stringSize = graphics.MeasureString(watermark, font);
                     var watermarkLocation = CalculateWatermarkLocation(image.Height, image.Width, stringSize);
-                    
+
                     graphics.DrawString(watermark, font, Brushes.LightGray, new Point(watermarkLocation.x, watermarkLocation.y));
                 }
             }
