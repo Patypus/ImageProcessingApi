@@ -27,7 +27,7 @@ namespace ImageProcessingApi.Controllers
         /// </summary>
         /// <param name="name">Name of the image to get (no file extension required)</param>
         /// <param name="fileType">The file format to return the image in. Supported types: bmp, png, jpg, gif</param>
-        /// <param name="resolution">New DPI resolution to the image to be returned at. This is optiona, passing no value will return the image at its original resolution.</param>
+        /// <param name="resolution">New DPI resolution to the image to be returned at. This is optional, passing no value will return the image at its original resolution.</param>
         /// <param name="watermark">Watermark string to apply to the returned image. This is optional and passing nothing results in no watermark being drawn</param>
         /// <param name="backgroundColour">Colour to change the image background to that accepts hex codes and colour names. This is optional and the background is only
         /// changed when this value is populated.</param>
