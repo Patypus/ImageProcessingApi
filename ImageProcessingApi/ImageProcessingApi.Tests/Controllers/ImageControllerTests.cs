@@ -19,13 +19,13 @@ using System.Threading.Tasks;
 namespace ImageProcessingApi.Tests.Controllers
 {
     [TestFixture]
-    public class ImageControllerTests
+    public class ImageControllerTests : ControllerTestsBase<ImageController>
     {
         [Test]
         public async Task GetImage_PassesParametersToService()
         {
             var mockImageService = Substitute.For<IImageService>();
-            var controller = new ImageController(mockImageService);
+            _controller = new ImageController(mockImageService);
 
             var name = "imageName";
             var fileType = "jpeg";
@@ -33,7 +33,7 @@ namespace ImageProcessingApi.Tests.Controllers
             var watermark = "watermark string";
             var colour = "Red";
 
-            await controller.GetImage(name, fileType, resolution, watermark, colour);
+            await _controller.GetImage(name, fileType, resolution, watermark, colour);
 
             await mockImageService.Received().GetImageAsync(Arg.Is<ImageRequestDto>(arg =>
                 arg.Name == name &&
@@ -51,9 +51,9 @@ namespace ImageProcessingApi.Tests.Controllers
             var mockImageData = new byte[8];
             (new Random()).NextBytes(mockImageData);
             mockImageService.GetImageAsync(Arg.Any<ImageRequestDto>()).Returns(mockImageData);
-            var controller = new ImageController(mockImageService);
+            _controller = new ImageController(mockImageService);
 
-            var result = await controller.GetImage("name", "jpeg");
+            var result = await _controller.GetImage("name", "jpeg");
             var castResult = (FileContentResult)result;
 
             Assert.AreEqual(mockImageData, castResult.FileContents);
@@ -63,7 +63,7 @@ namespace ImageProcessingApi.Tests.Controllers
         public void GetImage_SetsImageContent()
         {
             var mockImageService = Substitute.For<IImageService>();
-            var controller = new ImageController(mockImageService);
+            _controller = new ImageController(mockImageService);
 
             var supportedTypes = new List<(string name, string format)>
             {
@@ -76,7 +76,7 @@ namespace ImageProcessingApi.Tests.Controllers
 
             supportedTypes.ForEach(async typeDetails =>
             {
-                var result = await controller.GetImage("name", typeDetails.name);
+                var result = await _controller.GetImage("name", typeDetails.name);
                 var castResult = (FileContentResult)result;
 
                 Assert.AreEqual(typeDetails.format, castResult.ContentType);
@@ -87,10 +87,10 @@ namespace ImageProcessingApi.Tests.Controllers
         public async Task GetImage_ReturnsBadRequestForUnSupportedFileType()
         {
             var mockImageService = Substitute.For<IImageService>();
-            var controller = new ImageController(mockImageService);
+            _controller = new ImageController(mockImageService);
             var unsupportedType = "docx";
 
-            var result = await controller.GetImage("name", unsupportedType);
+            var result = await _controller.GetImage("name", unsupportedType);
             var castResult = (BadRequestObjectResult)result;
 
             Assert.NotNull(castResult);
@@ -100,18 +100,18 @@ namespace ImageProcessingApi.Tests.Controllers
         [Test]
         public async Task GetImage_ReturnsNotFoundForFileNotFoundException()
         {
-            var exceptionMessage = "file not found";
+            var fileName = "the_file_I_want";
             var mockImageService = Substitute.For<IImageService>();
             mockImageService.GetImageAsync(Arg.Any<ImageRequestDto>())
-                .Throws(new FileNotFoundException(exceptionMessage));
-            var controller = new ImageController(mockImageService);
-            var unsupportedType = "docx";
+                .Throws(new FileNotFoundException("file not found"));
+            _controller = new ImageController(mockImageService);
+            SetupContext();
 
-            var result = await controller.GetImage("name", unsupportedType);
+            var result = await _controller.GetImage(fileName, "jpg");
             var castResult = (NotFoundObjectResult)result;
 
             Assert.NotNull(castResult);
-            Assert.AreEqual(exceptionMessage, castResult.Value.ToString());
+            Assert.AreEqual($"Unable to find an image with the name '{fileName}'", castResult.Value.ToString());
         }
 
         [Test]
@@ -120,10 +120,10 @@ namespace ImageProcessingApi.Tests.Controllers
             var exceptionMessage = "its all gone wrong";
             var mockImageService = Substitute.For<IImageService>();
             mockImageService.GetImageAsync(Arg.Any<ImageRequestDto>()).Throws(new Exception(exceptionMessage));
-            var controller = new ImageController(mockImageService);
-            var unsupportedType = "docx";
+            _controller = new ImageController(mockImageService);
+            SetupContext();
 
-            var result = await controller.GetImage("name", unsupportedType);
+            var result = await _controller.GetImage("name", "jpg");
             var castResult = (ObjectResult)result;
 
             Assert.NotNull(castResult);

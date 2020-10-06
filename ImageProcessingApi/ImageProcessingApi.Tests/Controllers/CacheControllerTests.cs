@@ -11,15 +11,16 @@ using System.Threading.Tasks;
 namespace ImageProcessingApi.Tests.Controllers
 {
     [TestFixture]
-    public class CacheControllerTests
+    public class CacheControllerTests : ControllerTestsBase<CacheController>
     {
+
         [Test]
         public async Task ClearCacheAsync_CallsCacheService()
         {
             var mockCacheService = Substitute.For<ICacheService>();
-            var controller = new CacheController(mockCacheService);
-
-            await controller.ClearCacheAsync();
+            _controller = new CacheController(mockCacheService);
+            
+            await _controller.ClearCacheAsync();
 
             await mockCacheService.Received(1).ClearCacheAsync();
         }
@@ -30,14 +31,16 @@ namespace ImageProcessingApi.Tests.Controllers
             var exceptionMessage = "error";
             var mockCacheService = Substitute.For<ICacheService>();
             mockCacheService.ClearCacheAsync().Throws(new Exception(exceptionMessage));
-            var controller = new CacheController(mockCacheService);
+            _controller = new CacheController(mockCacheService);
 
-            var result = await controller.ClearCacheAsync();
+            SetupContext();
+
+            var result = await _controller.ClearCacheAsync();
             var castResult = (ObjectResult)result;
 
             Assert.NotNull(castResult);
             Assert.AreEqual((int)HttpStatusCode.InternalServerError, castResult.StatusCode);
-            //check message
+            Assert.AreEqual(exceptionMessage, castResult.Value);
         }
     }
 }

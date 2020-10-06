@@ -31,7 +31,7 @@ namespace ImageProcessingApi.Controllers
             }
             catch (Exception exception)
             {
-                return Problem(detail: exception.Message, statusCode: (int)HttpStatusCode.InternalServerError);
+                return StatusCode((int)HttpStatusCode.InternalServerError, exception.Message);
             }
         }
     }
