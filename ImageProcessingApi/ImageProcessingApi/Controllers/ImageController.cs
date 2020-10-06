@@ -94,17 +94,13 @@ namespace ImageProcessingApi.Controllers
 
             if (!string.IsNullOrEmpty(colourString))
             {
-                var colourStringToConvert = colourString.StartsWith("#")
-                    ? colourString
-                    : $"#{colourString}";
-
                 try
                 {
-                    result = (Color?)ColorTranslator.FromHtml(colourStringToConvert);
+                    result = (Color?)ColorTranslator.FromHtml(colourString);
                 }
                 catch (ArgumentException)
                 {
-                    throw new ArgumentException($"{colourString} is not a valid colour string. Please try hex codes or web-safe colour names.");
+                    throw new ArgumentException($"'{colourString}' is not a valid colour string. Please try hex codes or html named colours.");
                 }
 
             }

@@ -156,5 +156,19 @@ namespace ImageProcessingApi.Tests.Controllers
             Assert.AreEqual(exceptionMessage, castResult.Value.ToString());
             Assert.AreEqual((int)HttpStatusCode.InternalServerError, castResult.StatusCode);
         }
+
+        [Test]
+        public async Task GetImage_ReturnsBadRequestUnknownColour()
+        {
+            var mockImageService = Substitute.For<IImageService>();
+            _controller = new ImageController(mockImageService);
+            var unknownColour = "Infinte sunset";
+
+            var result = await _controller.GetImage("name", "jpg", backgroundColour: unknownColour);
+            var castResult = (BadRequestObjectResult)result;
+
+            Assert.NotNull(castResult);
+            Assert.AreEqual($"'{unknownColour}' is not a valid colour string. Please try hex codes or html named colours.", castResult.Value.ToString());
+        }
     }
 }
