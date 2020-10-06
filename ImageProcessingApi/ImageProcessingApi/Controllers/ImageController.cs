@@ -67,6 +67,11 @@ namespace ImageProcessingApi.Controllers
 
         private ImageTypeConfiguration ValidateFileType(string requestedFileType)
         {
+            if (string.IsNullOrEmpty(requestedFileType))
+            {
+                throw new ArgumentException("The file type must be provided");
+            }
+
             switch (requestedFileType.ToLower())
             {
                 case "bmp":

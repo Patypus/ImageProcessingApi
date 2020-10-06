@@ -98,6 +98,32 @@ namespace ImageProcessingApi.Tests.Controllers
         }
 
         [Test]
+        public async Task GetImage_ReturnsBadRequestForNullFileType()
+        {
+            var mockImageService = Substitute.For<IImageService>();
+            _controller = new ImageController(mockImageService);
+
+            var result = await _controller.GetImage("name", null);
+            var castResult = (BadRequestObjectResult)result;
+
+            Assert.NotNull(castResult);
+            Assert.AreEqual("The file type must be provided", castResult.Value.ToString());
+        }
+
+        [Test]
+        public async Task GetImage_ReturnsBadRequestForEmptyFileType()
+        {
+            var mockImageService = Substitute.For<IImageService>();
+            _controller = new ImageController(mockImageService);
+
+            var result = await _controller.GetImage("name", string.Empty);
+            var castResult = (BadRequestObjectResult)result;
+
+            Assert.NotNull(castResult);
+            Assert.AreEqual("The file type must be provided", castResult.Value.ToString());
+        }
+
+        [Test]
         public async Task GetImage_ReturnsNotFoundForFileNotFoundException()
         {
             var fileName = "the_file_I_want";
