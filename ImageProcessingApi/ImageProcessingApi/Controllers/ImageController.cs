@@ -90,9 +90,26 @@ namespace ImageProcessingApi.Controllers
 
         private Color? ConvertColourString(string colourString)
         {
-            return !string.IsNullOrEmpty(colourString)
-                ? (Color?)ColorTranslator.FromHtml(colourString)
-                : null;
+            Color? result = null; 
+
+            if (!string.IsNullOrEmpty(colourString))
+            {
+                var colourStringToConvert = colourString.StartsWith("#")
+                    ? colourString
+                    : $"#{colourString}";
+
+                try
+                {
+                    result = (Color?)ColorTranslator.FromHtml(colourStringToConvert);
+                }
+                catch (ArgumentException)
+                {
+                    throw new ArgumentException($"{colourString} is not a valid colour string. Please try hex codes or web-safe colour names.");
+                }
+
+            }
+
+            return result;
         }
     }
 }
