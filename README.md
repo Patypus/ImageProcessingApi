@@ -1,6 +1,6 @@
 # ImageProcessingApi
 
-This is an service to serve up hosted images applying transformations based on the user's request, such as adding watermarks and updating the background colour.
+This is a service to serve up hosted images applying transformations based on the user's request, such as adding watermarks and updating the background colour.
 
 ## How to run
 
